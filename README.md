@@ -1,8 +1,5 @@
-# Kamino contract test 
-  - stake->raid->claim->unstake
-  - Works for Devnet
-  - include reward strage
+# User Market Place contract test UI
 
 ## Demo
- Demo is availabe at (https://kamino-contract-test.netlify.app)
+ Demo is availabe at (https://marketplace-contract-test.netlify.app)
 
