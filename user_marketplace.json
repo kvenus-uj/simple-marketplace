@@ -207,7 +207,7 @@
           "isSigner": false
         },
         {
-          "name": "tokenTo",
+          "name": "tokenFrom",
           "isMut": true,
           "isSigner": false
         },
@@ -242,24 +242,29 @@
       "name": "mintTo",
       "accounts": [
         {
-          "name": "nftMint",
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVault",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "nftTo",
+          "name": "tokenTo",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "tokenToAuthority",
+          "isMut": false,
+          "isSigner": true
         },
         {
           "name": "marketAccount",
           "isMut": true,
           "isSigner": false
-        },
-        {
-          "name": "admin",
-          "isMut": false,
-          "isSigner": true
         },
         {
           "name": "tokenProgram",
@@ -269,12 +274,12 @@
       ],
       "args": [
         {
-          "name": "nonceMarket",
+          "name": "nonceTokenVault",
           "type": "u8"
         },
         {
-          "name": "amount",
-          "type": "u64"
+          "name": "nonceMarket",
+          "type": "u8"
         }
       ]
     }

@@ -7,19 +7,16 @@ import Mynft from './components/Mynft';
 import * as metaplex from '@metaplex/js';
 import { PublicKey, Connection } from '@solana/web3.js';
 import { list, delist, initialize, _getPDA, _getATA, getMarketPlaceInfo, mintToken, buyNft } from './contract/utils';
-
 const admin = "HCkebVSBp5nwsJw7PNomAP1MHuaRvg9DPYBsNe1aMDGt";
 function App(props) {
   const { publicKey } = useWallet();
   const wallet = useWallet();
   const { connection } = props;
-  let isAdmin = false;
   // state change
   useEffect(() => {
     setNfts([]);
     setShow(false);
      if (publicKey && publicKey.toString() === admin) {
-        isAdmin = true;
         getNfts();
      } else {
       getListedInfo();
@@ -36,6 +33,7 @@ function App(props) {
   const [listedNft, setlistedNft] = useState([]);
   const [selectlistedNft, setSelectlistedNft] = useState([]);
   const [selectMyNft, setSelectMyNft] = useState([]);
+  const [seller, setSeller] = useState([]);
 
   const getNfts = async (e) => {
     setShow(false);
@@ -174,9 +172,6 @@ function App(props) {
     }
   }
 
-  async function claim() {
-  }
-
   async function delistNft() {
     let remainingAccounts = [];
     for(const obj of selectlistedNft) {
@@ -207,28 +202,14 @@ function App(props) {
   }
 
   async function buy() {
-    let remainingAccounts = [];
+    let mintKeys = [];
     for(const obj of selectlistedNft) {
       const pk = new PublicKey(obj.mint);
-      const pdaAddress = await _getPDA(wallet, pk);
-      const [pubkey, bump] = await _getATA(wallet, pk);
-      let tmp = {
-        pubkey: pdaAddress,
-        isWritable: true,
-        isSigner: false,
-      };
-      remainingAccounts.push(tmp);
-      let tmp1 = 
-      {
-        pubkey: pubkey,
-        isWritable: true,
-        isSigner: false,
-      };
-      remainingAccounts.push(tmp1);
+      mintKeys.push(pk);
     }
     try{
-      await buyNft(wallet, remainingAccounts);
-      await getMarketPlaceInfo();
+      await buyNft(wallet, mintKeys);
+      await getListedInfo();
       console.log('buy');
     } catch (err) {
       console.log("Transaction error: ", err);
@@ -240,11 +221,17 @@ function App(props) {
     console.log('init success');
   }
 
+  async function aidropToken() {
+    await mintToken(wallet);
+    console.log('airdrop')
+  }
+
   async function getListedInfo() {
     const info = await getMarketPlaceInfo(wallet);
     if(!info) return;
-    console.log(info, 'info');
     const mintNfts = info.nftListKeys;
+    const sellerPk = info.adminKey;
+    setSeller(sellerPk);
     let newListedNft = [];
     for (const mintNft of mintNfts) {
       const _nft = [];
@@ -266,12 +253,14 @@ function App(props) {
         <Col lg="1" >
         </Col>
         <Col className='flex justify-between'>
-          <Button onClick={listNft}>List</Button>
-          <Button onClick={delistNft}>Delist</Button>
-          <Button onClick={buy}>Buy</Button>
+          {publicKey && publicKey.toString() === admin ? (<>
+            <Button onClick={listNft}>List</Button>
+            <Button onClick={delistNft}>Delist</Button>
+          </>
+          ) : (<Button onClick={buy}>Buy</Button>)}
           <Button href='https://solfaucet.com/'>Sol Faucet</Button>
           <Button href='https://kamino-nft-mint.netlify.app/'>Test NFT</Button>
-          <Button onClick={getListedInfo}>Airdrop token</Button>
+          <Button onClick={aidropToken}>Airdrop token</Button>
         </Col>
       </Row>
       <Mynft nfts={listedNft} select={selectListed} isMyNftSelected={isListedNftSelected}  />
