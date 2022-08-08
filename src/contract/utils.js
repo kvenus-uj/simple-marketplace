@@ -267,9 +267,7 @@ export async function mintToken(wallet) {
     wallet.publicKey,
     true
   );  
-  txs.push(transaction);
-  const tx= new Transaction();
-  tx.add(program.instruction.mintTo(
+  transaction.add(program.instruction.mintTo(
     tokenVaultBump,
     marketBump,
     {
@@ -283,7 +281,7 @@ export async function mintToken(wallet) {
       }
     }
   ))  
-  txs.push(tx);
+  txs.push(transaction);
   try {
     await executeAllTransactions(
       provider.connection,
