@@ -161,11 +161,9 @@ export async function buyNft(wallet, mintKeys) {
     wallet.publicKey,
     true
   );  
-  txs.push(transaction);
   const remainingAccounts = [];
   const seller = new PublicKey(admin);
   for(const mintKey of mintKeys) {
-    const transaction = new Transaction();
     const NftTokenAccount=await withFindOrInitAssociatedTokenAccount(
       transaction,
       provider.connection,
@@ -188,10 +186,8 @@ export async function buyNft(wallet, mintKeys) {
       isSigner: false,
     };
     remainingAccounts.push(tmp1);
-    txs.push(transaction);
   }
-  const tx = new Transaction();
-  tx.add(program.instruction.buyNft(
+  transaction.add(program.instruction.buyNft(
     tokenVaultBump,
     marketBump,
     {
@@ -206,7 +202,7 @@ export async function buyNft(wallet, mintKeys) {
       remainingAccounts,
     }
   ));
-  txs.push(tx);
+  txs.push(transaction);
   try {
     await executeAllTransactions(
       provider.connection,
