@@ -16,10 +16,8 @@ function App(props) {
   useEffect(() => {
     setNfts([]);
     setShow(false);
-     if (publicKey && publicKey.toString() === admin) {
+     if (publicKey) {
         getNfts();
-     } else {
-      getListedInfo();
      }
   }, [publicKey, connection]);
 
@@ -209,7 +207,7 @@ function App(props) {
     }
     try{
       await buyNft(wallet, mintKeys);
-      await getListedInfo();
+      await getNfts();
       console.log('buy');
     } catch (err) {
       console.log("Transaction error: ", err);
@@ -265,7 +263,7 @@ function App(props) {
       </Row>
       <Mynft nfts={listedNft} select={selectListed} isMyNftSelected={isListedNftSelected}  />
       <Row className="inputForm">
-        <Col lg="10">This is admin panel. Admin can list/delist his own nft.</Col>
+        <Col lg="10">Here are your own NFTs.</Col>
         <Col lg="2">
         </Col>
       </Row>
