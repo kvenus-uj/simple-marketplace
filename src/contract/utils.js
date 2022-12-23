@@ -31,6 +31,7 @@ async function getProvider(wallet) {
   );
   return provider;
 }
+
 export async function initialize(wallet, token_price) {
   const provider = await getProvider(wallet);
   const program = new Program(idl, programID, provider);
